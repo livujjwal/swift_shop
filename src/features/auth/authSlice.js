@@ -1,41 +1,70 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchCount } from "./authAPI";
+import { createUser, fetchCount, updateUser, userExist } from "./authAPI";
 
 const initialState = {
-  value: 0,
+  loggedInUser: null,
   status: "idle",
 };
 
-export const incrementAsync = createAsyncThunk(
-  "counter/fetchCount",
-  async (amount) => {
-    const response = await fetchCount(amount);
-    return response.data;
+export const createUserAsync = createAsyncThunk(
+  "auth/createUser",
+  async (userData) => {
+    const response = await createUser(userData);
+    return response;
+  }
+);
+export const userExistAsync = createAsyncThunk(
+  "auth/userExist",
+  async (userData) => {
+    const response = await userExist(userData);
+    return response;
+  }
+);
+export const updateUserAsync = createAsyncThunk(
+  "auth/updateUser",
+  async (update) => {
+    const response = await updateUser(update);
+    return response;
   }
 );
 
-export const counterSlice = createSlice({
-  name: "counter",
+export const authSlice = createSlice({
+  name: "auth",
   initialState,
-  reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(incrementAsync.pending, (state) => {
+      .addCase(createUserAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(incrementAsync.fulfilled, (state, action) => {
+      .addCase(createUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.value += action.payload;
+        state.loggedInUser = action.payload;
+      })
+      .addCase(userExistAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(userExistAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = action.payload;
+      })
+      .addCase(userExistAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.error = action.error;
+      })
+      .addCase(updateUserAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateUserAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = action.payload;
       });
   },
 });
 
-export const { increment } = counterSlice.actions;
+export const {} = authSlice.actions;
 
-export const selectCount = (state) => state.counter.value;
+export const selectLoggedInUser = (state) => state.auth.loggedInUser;
+export const selectError = (state) => state.auth.error;
 
-export default counterSlice.reducer;
+export default authSlice.reducer;

@@ -6,6 +6,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { selectItems } from "../cart/cartSlice";
+import { useSelector } from "react-redux";
 
 const user = {
   name: "Tom Cook",
@@ -30,6 +32,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const Navbar = ({ children }) => {
+  const items = useSelector(selectItems);
+  console.log(items);
   return (
     <>
       <div className="min-h-full">
@@ -78,9 +82,11 @@ const Navbar = ({ children }) => {
                           aria-hidden="true"
                         />
                       </Link>
-                      <span className="z-0 h-4 inline-flex items-center rounded-xl bg-gray-50 -mt-5 -ml-4   p-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                        2
-                      </span>
+                      {items.length > 0 && (
+                        <span className="z-0 h-4 inline-flex items-center rounded-xl bg-gray-50 -mt-5 -ml-4   p-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                          {items.length}
+                        </span>
+                      )}
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -191,9 +197,11 @@ const Navbar = ({ children }) => {
                         aria-hidden="true"
                       />
                     </Link>
-                    <span className="z-0 h-4 inline-flex items-center rounded-xl bg-gray-50 -mt-5 -ml-4  p-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                      2
-                    </span>
+                    {items.length > 0 && (
+                      <span className="z-0 h-4 inline-flex items-center rounded-xl bg-gray-50 -mt-5 -ml-4  p-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                        {items.length}
+                      </span>
+                    )}
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
